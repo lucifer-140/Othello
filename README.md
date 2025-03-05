@@ -16,8 +16,11 @@ Play against a friend or challenge an **AI opponent** with a **Greedy Algorithm*
 ---
 
 ## 📸 Screenshots
-*(Add some gameplay screenshots here for a better preview!)*
+### 🎮 Main Menu
+![Main Menu](screenshots/menu.png)
 
+### 🏆 Gameplay
+![Gameplay](screenshots/gameplay.png)
 ---
 
 ## 🛠️ How to Build & Run
