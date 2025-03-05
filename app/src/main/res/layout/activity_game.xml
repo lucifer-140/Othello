@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#228B22"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:id="@+id/topButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="?attr/actionBarSize">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back to Main Menu"
+            android:layout_marginEnd="20dp" />
+
+        <ImageButton
+            android:id="@+id/btnRestart"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_refresh"
+            android:contentDescription="Restart Game" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/turnIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turn: Black"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/topButtons"
+        android:layout_marginTop="10dp"/>
+
+    <com.example.othello.BoardView
+        android:id="@+id/boardView"
+        android:layout_width="match_parent"
+        android:layout_height="457dp"
+        android:layout_below="@id/turnIndicator"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"/>
+
+    <ImageView
+        android:id="@+id/gameOverImage"
+        android:layout_width="238dp"
+        android:layout_height="220dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:src="@drawable/cat_laugh"/>
+</RelativeLayout>
