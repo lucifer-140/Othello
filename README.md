@@ -82,31 +82,6 @@ Future improvements may include:
 
 ---
 
-## 🤝 Contributing
-Want to contribute? Follow these steps:
-
-1. **Fork** this repository.
-2. **Clone** the forked repo:
-   ```sh
-   git clone https://github.com/lucifer-140/Othello.git
-   ```
-3. **Create a new branch** for your feature:
-   ```sh
-   git checkout -b feature-name
-   ```
-4. **Commit your changes**:
-   ```sh
-   git add .
-   git commit -m "Add feature: feature-name"
-   ```
-5. **Push to your fork**:
-   ```sh
-   git push origin feature-name
-   ```
-6. Open a **Pull Request** on GitHub.
-
----
-
 ## 🛠️ Troubleshooting
 If you run into issues:
 - Make sure **Android Studio** and **Gradle** are up-to-date.

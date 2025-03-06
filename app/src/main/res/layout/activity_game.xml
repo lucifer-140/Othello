@@ -5,6 +5,7 @@
     android:background="#228B22"
     android:fitsSystemWindows="true">
 
+    <!-- Container untuk tombol agar lebih tengah & tidak kena notch -->
     <LinearLayout
         android:id="@+id/topButtons"
         android:layout_width="wrap_content"
@@ -14,6 +15,7 @@
         android:gravity="center"
         android:paddingTop="?attr/actionBarSize">
 
+        <!-- Tombol Kembali -->
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="50dp"

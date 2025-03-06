@@ -1,5 +1,6 @@
 package com.example.othello;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,6 +24,8 @@ public class BoardView extends View {
     private int cellSize;
     private ImageView gameOverImage;
 
+    private List<int[]> animatingTiles = new ArrayList<>();
+    private float animationProgress = 1f;
 
     private int[][] board;
     private boolean isBlackTurn = true;
@@ -120,11 +123,29 @@ public class BoardView extends View {
                 float radius = cellSize * 0.4f;
 
                 if (board[row][col] == 1 || board[row][col] == 2) {
-                    paint.setColor(board[row][col] == 1 ? Color.BLACK : Color.WHITE);
-                    canvas.drawCircle(cx, cy, radius, paint);
+                    boolean isAnimating = false;
+                    for (int[] tile : animatingTiles) {
+                        if (tile[0] == row && tile[1] == col) {
+                            isAnimating = true;
+                            break;
+                        }
+                    }
+
+                    if (isAnimating) {
+                        canvas.save();
+                        canvas.translate(cx, cy);
+                        canvas.scale(1f, Math.abs(animationProgress));
+                        paint.setColor(animationProgress > 0 ? Color.BLACK : Color.WHITE);
+                        canvas.drawCircle(0, 0, radius, paint);
+                        canvas.restore();
+                    } else {
+                        paint.setColor(board[row][col] == 1 ? Color.BLACK : Color.WHITE);
+                        canvas.drawCircle(cx, cy, radius, paint);
+                    }
                 }
             }
         }
+
         paint.setColor(Color.GRAY);
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
@@ -221,32 +242,6 @@ public class BoardView extends View {
         }, 1500);
     }
 
-    private void flipPieces(int row, int col, int player) {
-        int opponent = (player == 1) ? 2 : 1;
-        int[][] directions = {
-                {-1, -1}, {-1, 0}, {-1, 1},
-                {0, -1},         {0, 1},
-                {1, -1}, {1, 0}, {1, 1}
-        };
-
-        for (int[] dir : directions) {
-            int r = row + dir[0], c = col + dir[1];
-            List<int[]> toFlip = new ArrayList<>();
-
-            while (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == opponent) {
-                toFlip.add(new int[]{r, c});
-                r += dir[0];
-                c += dir[1];
-            }
-
-            if (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == player) {
-                for (int[] pos : toFlip) {
-                    board[pos[0]][pos[1]] = player;
-                }
-            }
-        }
-    }
-
     private boolean hasValidMove(int player) {
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
@@ -287,8 +282,22 @@ public class BoardView extends View {
     }
 
 
+    private void animateFlip(List<int[]> tilesToAnimate) {
+        animatingTiles.clear();
+        animatingTiles.addAll(tilesToAnimate);
 
-    private boolean isValidMove(int row, int col, int player) {
+        ValueAnimator animator = ValueAnimator.ofFloat(1f, -1f);
+        animator.setDuration(300);
+        animator.addUpdateListener(animation -> {
+            animationProgress = (float) animation.getAnimatedValue();
+            invalidate();
+        });
+
+        animator.start();
+    }
+
+
+    private void flipPieces(int row, int col, int player) {
         int opponent = (player == 1) ? 2 : 1;
         int[][] directions = {
                 {-1, -1}, {-1, 0}, {-1, 1},
@@ -296,22 +305,31 @@ public class BoardView extends View {
                 {1, -1}, {1, 0}, {1, 1}
         };
 
+        List<int[]> tilesToAnimate = new ArrayList<>();
+
         for (int[] dir : directions) {
             int r = row + dir[0], c = col + dir[1];
-            boolean hasOpponent = false;
+            List<int[]> toFlip = new ArrayList<>();
 
             while (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == opponent) {
-                hasOpponent = true;
+                toFlip.add(new int[]{r, c});
                 r += dir[0];
                 c += dir[1];
             }
 
-            if (hasOpponent && r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == player) {
-                return true;
+            if (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == player) {
+                tilesToAnimate.addAll(toFlip);
+                for (int[] pos : toFlip) {
+                    board[pos[0]][pos[1]] = player;
+                }
             }
         }
-        return false;
+
+        if (!tilesToAnimate.isEmpty()) {
+            animateFlip(tilesToAnimate);
+        }
     }
+
 
     private int countFlippedPieces(int row, int col, int player) {
         int count = 0;
@@ -338,4 +356,30 @@ public class BoardView extends View {
         }
         return count;
     }
+
+    private boolean isValidMove(int row, int col, int player) {
+        int opponent = (player == 1) ? 2 : 1;
+        int[][] directions = {
+                {-1, -1}, {-1, 0}, {-1, 1},
+                {0, -1},         {0, 1},
+                {1, -1}, {1, 0}, {1, 1}
+        };
+
+        for (int[] dir : directions) {
+            int r = row + dir[0], c = col + dir[1];
+            boolean hasOpponent = false;
+
+            while (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == opponent) {
+                hasOpponent = true;
+                r += dir[0];
+                c += dir[1];
+            }
+
+            if (hasOpponent && r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] == player) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
